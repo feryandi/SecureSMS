@@ -12,7 +12,6 @@ import android.widget.EditText;
 public class WriteActivity extends AppCompatActivity {
 
     Button sendPlain;
-    Button sendEncrypted;
     EditText receiver;
     EditText message;
 

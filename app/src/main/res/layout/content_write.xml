@@ -46,17 +46,40 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_weight="3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="wrap_content">
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Encrypt Message with Key: "
+                android:id="@+id/encryption" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Encryption Key"
+                android:backgroundTint="@color/colorAccent"
+                android:id="@+id/encKey" />
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Use Signature"
+            android:id="@+id/signature" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:orientation="horizontal"
         android:layout_height="0dp"
         android:layout_weight="3">
-        <Button
-            android:id="@+id/btnEncrypted"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/colorAccent"
-            android:textColor="@android:color/white"
-            android:layout_height="match_parent"
-            android:text="Send Encrypted"/>
         <Button
             android:id="@+id/btnPlain"
             android:layout_width="0dp"
@@ -64,7 +87,7 @@
             android:layout_height="match_parent"
             android:backgroundTint="@color/colorAccent"
             android:textColor="@android:color/white"
-            android:text="Send Plain"/>
+            android:text="Send Message"/>
     </LinearLayout>
 
 </LinearLayout>

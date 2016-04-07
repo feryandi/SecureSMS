@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="It's looks like you're new user.\n\n Please insert a password for this application:"
+        android:text="It's looks like you're new user.\n\n Please fill this form."
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="20sp"
@@ -18,10 +18,20 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:inputType="phone"
+        android:ems="15"
+        android:id="@+id/phone"
+        android:hint="Your Phone Number"
+        android:padding="10dp"
+        android:layout_margin="10dp"
+        android:background="@android:color/white"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
         android:inputType="textPassword"
         android:ems="15"
         android:id="@+id/pwd"
-        android:hint="password"
+        android:hint="Password"
         android:padding="10dp"
         android:layout_margin="10dp"
         android:background="@android:color/white"/>
@@ -31,7 +41,7 @@
         android:inputType="textPassword"
         android:ems="15"
         android:id="@+id/repwd"
-        android:hint="re-type password"
+        android:hint="Re-Type Password"
         android:padding="10dp"
         android:layout_margin="10dp"
         android:background="@android:color/white"/>
