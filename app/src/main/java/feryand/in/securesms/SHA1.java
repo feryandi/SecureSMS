@@ -1,4 +1,4 @@
-package feryand.in.securesms.crypto;
+package feryand.in.securesms;
 
 import java.math.BigInteger;
 
