@@ -1,13 +1,12 @@
-package feryand.in.securesms.crypto;
+package feryand.in.securesms;
 
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
 /**
  * SHA-1 Hash Function
  * @author Feryandi
  */
+
 public class SHA1 {
 
     BigInteger h0 = new BigInteger("1732584193");
@@ -46,12 +45,13 @@ public class SHA1 {
         size += 64;
 
         /* Break message to 512-bit chunks */
-        int nc = (int)Math.ceil((float)size/512);
+        int nc = (int)Math.ceil(size/512);
         BigInteger[] chunks = new BigInteger[nc];
 
         for ( int i = nc - 1; i >= 0; i-- ) {
-            chunks[i] = textBit.shiftRight(i * 512);
-            textBit = textBit.subtract(chunks[i].shiftLeft(i * 512));
+            int ha = nc - 1;
+            chunks[ha - i] = textBit.shiftRight(i * 512);
+            textBit = textBit.subtract(chunks[ha - i].shiftLeft(i * 512));
 
             /* Remember:
                In BigInteger, leading 0 is in-significant and not printed
@@ -72,8 +72,8 @@ public class SHA1 {
         }
 
         /* Extend to 80 words */
-        int iext = 16;
         for (int x = 0; x < nc; x++) {
+            int iext = 16;
             while (iext <= 79) {
                 /* XOR */
                 wchunks[x][iext] = (((wchunks[x][iext-3]).xor(wchunks[x][iext-8])).xor(wchunks[x][iext-14])).xor(wchunks[x][iext-16]);
@@ -144,6 +144,7 @@ public class SHA1 {
         digest += Integer.toHexString((h2).intValue());
         digest += Integer.toHexString((h3).intValue());
         digest += Integer.toHexString((h4).intValue());
+
     }
 
     private static BigInteger rotateLeft(BigInteger bi) {
@@ -155,17 +156,18 @@ public class SHA1 {
     }
 
     private int getCongruentPadding(int size) {
-        int ret = 0;
-        int i = 1;
-        do {
-            ret = (448 * i) - size;
-            ++i;
-        } while (ret < 0);
+        int tailLength = size % 512;
+        int padLength = 0;
+        if ((512 - tailLength >= 64)) {
+            padLength = 512 - tailLength;
+        } else {
+            padLength = 1024 - tailLength;
+        }
 
-        return ret;
+        return (padLength-64);
     }
 
-    public String getHash() {
+    public String getDigest() {
         return digest;
     }
 

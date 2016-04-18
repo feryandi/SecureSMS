@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class WriteActivity extends AppCompatActivity {
 
     Button sendPlain;
@@ -38,13 +40,20 @@ public class WriteActivity extends AppCompatActivity {
         String r = receiver.getText().toString();
         String m = message.getText().toString();
 
+        SHA1 s = new SHA1(m);
+        m += "<ds>" + s.getDigest() + "</ds>";
+
         try {
             SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(r, null, m, null, null);
+
+            ArrayList<String> parts = smsManager.divideMessage(m);
+            smsManager.sendMultipartTextMessage(r, null, parts, null, null);
+
+            //smsManager.sendTextMessage(r, null, m, null, null);
             Snackbar.make(v, "Your message already sent.", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         } catch (Exception e) {
-            Snackbar.make(v, "We cannot send the message. Please try again.", Snackbar.LENGTH_LONG)
+            Snackbar.make(v, "We cannot send the message. Please try again. \n Error: " + e, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
     }
