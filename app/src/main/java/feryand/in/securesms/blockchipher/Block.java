@@ -6,12 +6,12 @@ import java.util.Random;
  * Created by yoga on 4/14/2016.
  */
 public class Block {
-    public char[] bit = null;         // a container array, consist of byte/hex of Block
+    public int[] bit = null;         // a container array, consist of byte/hex of Block
     public int BIT_SIZE;             // 8 for byte, 4 for hex
 
     public Block() {
         BIT_SIZE=8;
-        bit = new char[Global.BLOCK_SIZE];
+        bit = new int[Global.BLOCK_SIZE];
         for(int i=0; i<BIT_SIZE;i++){
             bit[i]=0;
         }
@@ -19,14 +19,14 @@ public class Block {
 
     public Block(int n){
         BIT_SIZE=n;
-        bit = new char[Global.BLOCK_SIZE];
+        bit = new int[Global.BLOCK_SIZE];
         Random rand= new Random();
-        for(int i = 0; i < Global.BLOCK_SIZE; i++) bit[i] = (char)rand.nextInt(1 << BIT_SIZE);
+        for(int i = 0; i < Global.BLOCK_SIZE; i++) bit[i] = (int)rand.nextInt(1 << BIT_SIZE);
     }
 
-    public Block(int n, char[] b){
+    public Block(int n, int[] b){
         BIT_SIZE=n;
-        bit = new char[Global.BLOCK_SIZE];
+        bit = new int[Global.BLOCK_SIZE];
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
             bit[i] = b[i];
         }
@@ -34,17 +34,17 @@ public class Block {
 
     public Block(Block b){
         BIT_SIZE=b.BIT_SIZE;
-        bit = new char[Global.BLOCK_SIZE];
+        bit = new int[Global.BLOCK_SIZE];
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
             bit[i] = b.bit[i];
         }
     }
 
-    public char get(int i) {
+    public int get(int i) {
         return bit[i];
     }
 
-    public void set(int i, char b) {
+    public void set(int i, int b) {
         bit[i] = b;
     }
 
@@ -57,7 +57,7 @@ public class Block {
     public Block add(Block b){
         Block ret= new Block(BIT_SIZE);
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
-            ret.bit[i] = (char) ((this.bit[i] + b.bit[i]) % (1 << BIT_SIZE));
+            ret.bit[i] = (int) ((this.bit[i] + b.bit[i]) % (1 << BIT_SIZE));
         }
         return ret;
     }
@@ -65,7 +65,7 @@ public class Block {
     public Block substract(Block b) {
         Block ret= new Block(BIT_SIZE);
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
-            ret.bit[i] = (char) ((this.bit[i] - b.bit[i] + (1 << BIT_SIZE)) % (1 << BIT_SIZE));
+            ret.bit[i] = (int) ((this.bit[i] - b.bit[i] + (1 << BIT_SIZE)) % (1 << BIT_SIZE));
         }
         return ret;
     }
@@ -73,7 +73,7 @@ public class Block {
     public Block xor(Block b){
         Block ret= new Block(BIT_SIZE);
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
-            ret.bit[i] = (char) (this.bit[i] ^ b.bit[i]);
+            ret.bit[i] = (int) (this.bit[i] ^ b.bit[i]);
         }
         return ret;
     }
@@ -175,12 +175,12 @@ public class Block {
         Block fi=new Block(4);
         Block se=new Block(4);
         for(int i = 0; i < Global.BLOCK_SIZE / 2; i++) {
-            fi.bit[i * 2] = (char) (bit[i] % (1 << 4));
-            fi.bit[i * 2 + 1] = (char) ((bit[i] / (1 << 4)) % (1 << 4));
+            fi.bit[i * 2] = (int) (bit[i] % (1 << 4));
+            fi.bit[i * 2 + 1] = (int) ((bit[i] / (1 << 4)) % (1 << 4));
         }
         for(int i = 0; i < Global.BLOCK_SIZE / 2; i++) {
-            se.bit[i * 2] = (char) (bit[i + Global.BLOCK_SIZE/2] % (1 << 4));
-            se.bit[i * 2 + 1] = (char) ((bit[i + Global.BLOCK_SIZE/2] >> 4) % (1 << 4));
+            se.bit[i * 2] = (int) (bit[i + Global.BLOCK_SIZE/2] % (1 << 4));
+            se.bit[i * 2 + 1] = (int) ((bit[i + Global.BLOCK_SIZE/2] >> 4) % (1 << 4));
         }
         Block ret[]= new Block[2];
         ret[0]=fi;
@@ -191,8 +191,8 @@ public class Block {
     public void combine(Block fi, Block se) {
         this.BIT_SIZE = 8;
         for(int i = 0; i < Global.BLOCK_SIZE; i += 2) {
-            this.bit[i/2] = (char) (fi.bit[i] | (fi.bit[i + 1] << 4));
-            this.bit[i/2 + Global.BLOCK_SIZE/2] = (char) (se.bit[i] | (se.bit[i + 1] << 4));
+            this.bit[i/2] = (int) (fi.bit[i] | (fi.bit[i + 1] << 4));
+            this.bit[i/2 + Global.BLOCK_SIZE/2] = (int) (se.bit[i] | (se.bit[i + 1] << 4));
         }
     }
 }

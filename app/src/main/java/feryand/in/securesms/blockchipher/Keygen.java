@@ -6,8 +6,8 @@ package feryand.in.securesms.blockchipher;
 public class Keygen {
 
     static boolean created = false;
-    static char[] rev_byte_table= null;
-    static char[] rev_hex_table=null;
+    static int[] rev_byte_table;
+    static int[] rev_hex_table;
 
     public Keygen(){
         if(!created) {
@@ -16,20 +16,20 @@ public class Keygen {
         }
     }
     public void init(){
-        rev_byte_table = new char[256];
-        rev_hex_table = new char[16];
-        for(int i = 0; i < 256; i++) rev_byte_table[Global.byte_table[i]] = (char)i;
-        for(int i = 0; i < 16; i++) rev_hex_table[Global.hex_table[i]] = (char)i;
+        rev_byte_table = new int[256];
+        rev_hex_table = new int[16];
+        for(int i = 0; i < 256; i++) rev_byte_table[Global.byte_table[i]] = (int)i;
+        for(int i = 0; i < 16; i++) rev_hex_table[Global.hex_table[i]] = (int)i;
     }
-    char[] nextHexKey(char[] key){
-        char[] p = new char[Global.BLOCK_SIZE];
+    int[] nextHexKey(int[] key){
+        int[] p = new int[Global.BLOCK_SIZE];
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
             p[i] = Global.hex_table[key[i]];
         }
         return p;
     }
-    char[] nextByteKey(char[] key){
-        char[] p = new char[Global.BLOCK_SIZE];
+    int[] nextByteKey(int[] key){
+        int[] p = new int[Global.BLOCK_SIZE];
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
             p[i] = Global.byte_table[key[i]];
         }
@@ -39,7 +39,7 @@ public class Keygen {
      * bit_size : 4 (hexa key)
      *            8 (byte key)
      */
-    char[] nextKey(char[] key, int bit_size) {
+    int[] nextKey(int[] key, int bit_size) {
         if(bit_size == 4) {
             return nextHexKey(key);
         }
@@ -51,8 +51,8 @@ public class Keygen {
     }
 
 /* generate previous hexa key */
-    char[] prevHexKey(char[] key) {
-        char[] p = new char[Global.BLOCK_SIZE];
+    int[] prevHexKey(int[] key) {
+        int[] p = new int[Global.BLOCK_SIZE];
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
             p[i] = rev_hex_table[key[i]];
         }
@@ -60,8 +60,8 @@ public class Keygen {
     }
 
 /* generate previous byte key */
-    char[] prevByteKey(char[] key) {
-        char[] p = new char[Global.BLOCK_SIZE];
+    int[] prevByteKey(int[] key) {
+        int[] p = new int[Global.BLOCK_SIZE];
         for(int i = 0; i < Global.BLOCK_SIZE; i++) {
             p[i] = rev_byte_table[key[i]];
         }
@@ -72,7 +72,7 @@ public class Keygen {
  * bit_size : 4 (hexa key)
  *            8 (byte key)
  */
-    char[] prevKey(char[] key, int bit_size) {
+    int[] prevKey(int[] key, int bit_size) {
         if(bit_size == 4) {
             return prevHexKey(key);
         }

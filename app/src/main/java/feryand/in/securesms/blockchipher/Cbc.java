@@ -12,12 +12,12 @@ public class Cbc {
 
     }
 
-    ArrayList<Block> encrypt(ArrayList<Block> plain, char[] k) {
+    ArrayList<Block> encrypt(ArrayList<Block> plain, int[] k) {
         Block K= new Block(8, k);
-        char[] key = K.bit;
+        int[] key = K.bit;
         ArrayList<Block> cip= new ArrayList<>();
         Keygen keygen=new Keygen();
-        char[] pre = key;
+        int[] pre = key;
         for(int i = 0; i < plain.size(); i++) {
             key = keygen.nextByteKey(key);
             plain.set(i, plain.get(i).xor(new Block(8, pre)));
@@ -27,9 +27,9 @@ public class Cbc {
         return cip;
     }
 
-    ArrayList<Block> decrypt(ArrayList<Block> cipher, char[] k) {
+    ArrayList<Block> decrypt(ArrayList<Block> cipher, int[] k) {
         Block K=new Block(8, k);
-        char[] key = K.bit;
+        int[] key = K.bit;
         ArrayList<Block> pres=new ArrayList<>();
         ArrayList<Block> keys= new ArrayList<>();
         ArrayList<Block> plain= new ArrayList<>();
