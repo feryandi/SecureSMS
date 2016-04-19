@@ -17,10 +17,10 @@ public class ECDSA {
     Point G; /* base point */
     
     /* Pub - Pri */
-    Point pub;
-    BigInteger pri;
+    public Point pub;
+    public BigInteger pri;
     
-    ECDSA() {
+    public ECDSA() {
         /* Using secp256k1 */
         prime = new BigInteger("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F", 16);
         a = new BigInteger("0000000000000000000000000000000000000000000000000000000000000000", 16);
@@ -39,7 +39,13 @@ public class ECDSA {
         pri = iv.mod(n.subtract(BigInteger.valueOf(1)));    
         pub = G.multiply(pri, a);
         Point x = pub.multiply(n, a);
-    }   
+    }
+
+    public void setPri(String newPri) {
+        pri = new BigInteger(newPri, 16);
+        pub = G.multiply(pri, a);
+        Point x = pub.multiply(n, a);
+    }
     
     public Point generateSignature(String hashed) {
         /* Masukan string hashed, harus sudah dihash dengan SHA-1 */
@@ -72,7 +78,7 @@ public class ECDSA {
         return rs;
     }
     
-    public boolean verifySignature(Point rs, String hashed) {     
+    public boolean verifySignature(Point rs, String hashed) {
         /* Masukan string hashed, harus sudah dihash dengan SHA-1 */
         
         boolean ret = false;

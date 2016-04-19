@@ -11,6 +11,8 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
+import feryand.in.securesms.ECDSA.ECDSA;
+import feryand.in.securesms.ECDSA.Point;
 import feryand.in.securesms.ECDSA.SHA1;
 
 public class WriteActivity extends AppCompatActivity {
@@ -18,6 +20,7 @@ public class WriteActivity extends AppCompatActivity {
     Button sendPlain;
     EditText receiver;
     EditText message;
+    DBHandler dbHandler = new DBHandler(this, null, null, 1);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +45,14 @@ public class WriteActivity extends AppCompatActivity {
         String r = receiver.getText().toString();
         String m = message.getText().toString();
 
+        ECDSA ec = new ECDSA();
+        Data dataPri = dbHandler.findData("pri");
+        ec.setPri(dataPri.getValue());
+
         SHA1 s = new SHA1(m);
-        m += "<ds>" + s.getDigest() + "</ds>";
+        m = "<ss>" + "DC" + "</ss>" + m;
+        Point rs = ec.generateSignature(s.getDigest());
+        m += "<ds>04" + (rs.getX()).toString(16) + "" + (rs.getY()).toString(16) + "</ds>";
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -54,6 +63,8 @@ public class WriteActivity extends AppCompatActivity {
             //smsManager.sendTextMessage(r, null, m, null, null);
             Snackbar.make(v, "Your message already sent.", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
+
+            finish();
         } catch (Exception e) {
             Snackbar.make(v, "We cannot send the message. Please try again. \n Error: " + e, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();

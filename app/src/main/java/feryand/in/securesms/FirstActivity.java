@@ -3,16 +3,20 @@ package feryand.in.securesms;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.SmsManager;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Random;
+
+import feryand.in.securesms.API.HTTP;
+import feryand.in.securesms.ECDSA.ECDSA;
 
 public class FirstActivity extends AppCompatActivity {
 
@@ -24,6 +28,18 @@ public class FirstActivity extends AppCompatActivity {
     private String OTPcode;
     private String OTP;
     DBHandler dbHandler = new DBHandler(this, null, null, 1);
+
+    private class AsyncSetKey extends AsyncTask<String, Integer, Double> {
+        @Override
+        protected Double doInBackground(String... params) {
+            HTTP.getInstance().setKey(params[0], params[1], params[2]);
+            return null;
+        }
+
+        protected void onPostExecute(Double result){
+            Toast.makeText(getApplicationContext(), "Your ECDSA key is generated", Toast.LENGTH_LONG).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +91,16 @@ public class FirstActivity extends AppCompatActivity {
 
                             if (OTPcode.equals(OTP) || OTPcode.equals("123456")) {
                                 Data data = new Data("password", repwd.getText().toString());
+                                dbHandler.addData(data);
+
+                                ECDSA e = new ECDSA();
+                                e.generateKey();
+
+                                new AsyncSetKey().execute(phone.getText().toString(),
+                                        ((e.pub).getX()).toString(16),
+                                        ((e.pub).getY()).toString(16));
+
+                                data = new Data("pri", (e.pri).toString(16));
                                 dbHandler.addData(data);
 
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
