@@ -10,31 +10,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="feryand.in.securesms.ReadActivity"
-    tools:showIn="@layout/activity_read">
+    tools:context="feryand.in.securesms.ReadActivity">
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="Receiver"
         android:textStyle="bold"
-        android:textSize="15dp"
-        android:layout_weight="1"/>
+        android:textSize="15dp"/>
     <EditText
         android:id="@+id/receiver"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:inputType="phone"
-        android:ems="10"
-        android:layout_weight="2" />
+        android:ems="10" />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:text="Message"
         android:textStyle="bold"
-        android:textSize="15dp"
-        android:layout_weight="1"/>
+        android:textSize="15dp"/>
     <EditText
         android:id="@+id/message"
         android:layout_width="match_parent"
@@ -48,30 +44,36 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="8"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_height="wrap_content">
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Encrypt Message with Key: "
-                android:id="@+id/encryption" />
-            <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/encryption"/>
+            <EditText
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Encryption Key"
+                android:hint="Key"
+                android:textSize="15sp"
+                android:ems="10"
+                android:layout_marginLeft="30dp"
                 android:backgroundTint="@color/colorAccent"
                 android:id="@+id/encKey" />
         </LinearLayout>
 
         <CheckBox
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Use Signature"
-            android:id="@+id/signature" />
+            android:text="Use Digital Certificate"
+            android:id="@+id/signature"
+            android:checked="true"/>
 
     </LinearLayout>
 
@@ -82,9 +84,8 @@
         android:layout_weight="3">
         <Button
             android:id="@+id/btnPlain"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:backgroundTint="@color/colorAccent"
             android:textColor="@android:color/white"
             android:text="Send Message"/>
