@@ -11,6 +11,8 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
+import feryand.in.securesms.ECDSA.SHA1;
+
 public class WriteActivity extends AppCompatActivity {
 
     Button sendPlain;

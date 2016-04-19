@@ -1,4 +1,4 @@
-package feryand.in.securesms;
+package feryand.in.securesms.ECDSA;
 
 import java.math.BigInteger;
 
@@ -19,7 +19,7 @@ public class SHA1 {
 
     String digest;
 
-    SHA1 (String text) {
+    public SHA1(String text) {
         /* Count real bit length */
         int size = text.length() * 8;
 
