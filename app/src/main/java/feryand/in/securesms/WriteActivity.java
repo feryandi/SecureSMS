@@ -10,17 +10,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import feryand.in.securesms.ECDSA.ECDSA;
 import feryand.in.securesms.ECDSA.Point;
 import feryand.in.securesms.ECDSA.SHA1;
+import feryand.in.securesms.blockchipher.Block;
+import feryand.in.securesms.blockchipher.Bonek;
 
 public class WriteActivity extends AppCompatActivity {
 
     Button sendPlain;
     EditText receiver;
     EditText message;
+
 
     CheckBox E;
     EditText EK;
@@ -54,6 +58,24 @@ public class WriteActivity extends AppCompatActivity {
     protected void sendSMSMessage(View v) {
         String r = receiver.getText().toString();
         String m = message.getText().toString();
+        Bonek bonek= new Bonek();
+
+        if ( E.isChecked()){
+            byte[] b= m.getBytes();
+            ArrayList<Byte> arrb= new ArrayList<>();
+            for(int i=0; i< b.length ;i++){
+                arrb.set(i,b[i]);
+            }
+            String strkey=EK.getText().toString();
+
+
+            int[] key= Bonek.hexa_to_key(strkey);
+            ArrayList<Block> to=bonek.encrypt(Bonek.byte_to_block(arrb), key);
+            ArrayList<Byte> ret = Bonek.block_to_byte(to);
+
+            byte[] arrbyte=Bonek.listToArray(ret);
+            m=Bonek.bytesToHex(arrbyte);
+        }
 
         String option = "";
 
@@ -79,6 +101,10 @@ public class WriteActivity extends AppCompatActivity {
             Point rs = ec.generateSignature(s.getDigest());
             m += "<ds>04" + (rs.getX()).toString(16) + "" + (rs.getY()).toString(16) + "</ds>";
         }
+
+
+
+
 
         try {
             SmsManager smsManager = SmsManager.getDefault();

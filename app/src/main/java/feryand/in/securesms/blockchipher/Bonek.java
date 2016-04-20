@@ -82,12 +82,30 @@ public class Bonek {
         return cipher;
     }
 
-    public static int[] hexa_to_byte(String s) {
-        int n = s.length();
+    public static byte[] hexa_to_byte(String s) {
+
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
+    }
+
+    public static int[] hexa_to_key(String s) {
+        String strkey= s;
+        while(strkey.length()<32){
+            strkey=strkey.concat(strkey);
+        }
+        if(strkey.length()>32){
+            strkey=strkey.substring(0,32);
+        }
+        int n = strkey.length();
         int[] ret = new int[n / 2];
         for (int i = 0; i < n; i += 2) {
-            int a = ('0' <= s.charAt(i) && s.charAt(i) <= '9' ? s.charAt(i) - '0' : s.charAt(i) - 'a' + 10);
-            int b = ('0' <= s.charAt(i+1) && s.charAt(i+1) <= '9' ? s.charAt(i+1) - '0' : s.charAt(i+1) - 'a' + 10);
+            int a = ('0' <= strkey.charAt(i) && strkey.charAt(i) <= '9' ? strkey.charAt(i) - '0' : strkey.charAt(i) - 'a' + 10);
+            int b = ('0' <= strkey.charAt(i+1) && strkey.charAt(i+1) <= '9' ? strkey.charAt(i+1) - '0' : strkey.charAt(i+1) - 'a' + 10);
             ret[i / 2] = (b << 4) | a;
         }
         return ret;
@@ -116,5 +134,33 @@ public class Bonek {
             }
         }
         return ret;
+    }
+
+    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+
+    public static String bytesToHex(byte[] bytes) {
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
+
+    public static byte[] listToArray (ArrayList<Byte> ret){
+        byte[] bret = new byte[ret.size()];
+        for(int i=0; i<ret.size();i++){
+            bret[i]=ret.get(i);
+        }
+        return bret;
+    }
+
+    public static ArrayList<Byte> arrayToList (byte[] arrb){
+        ArrayList<Byte> b = new ArrayList();
+        for (int i = 0; i < arrb.length; i++) {
+            b.add(arrb[i]);
+        }
+        return b;
     }
 }
