@@ -18,11 +18,14 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     /* Variables */
     ListView inbox;
-    SimpleCursorAdapter adapter;
+    SSMSAdapter adapter;
     String[] readSmsPerms = {Manifest.permission.READ_SMS};
     String[] writeSmsPerms = {Manifest.permission.SEND_SMS};
     String[] internetPerms = {Manifest.permission.INTERNET};
@@ -53,10 +56,15 @@ public class MainActivity extends AppCompatActivity {
         Uri inboxURI = Uri.parse("content://sms/inbox");
         String[] reqCols = new String[] { "_id", "address", "body" };
         ContentResolver cr = getContentResolver();
+
         Cursor c = cr.query(inboxURI, reqCols, null, null, null);
-        adapter = new SimpleCursorAdapter(this, R.layout.inbox_list, c,
-                new String[] { "body", "address" }, new int[] {
-                R.id.message, R.id.sender }, 2);
+
+        ArrayList<SMS> SMSList = new ArrayList<SMS>();
+        for(c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            SMSList.add(new SMS(c.getString(c.getColumnIndex("body")), c.getString(c.getColumnIndex("address"))));
+        }
+
+        adapter = new SSMSAdapter(this, R.layout.inbox_list, SMSList);
         inbox.setAdapter(adapter);
 
         inbox.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -64,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
                                     int position, long id) {
 
                 Object o = inbox.getItemAtPosition(position);
-                Cursor item = (Cursor) o;
+                SMS item = (SMS) o;
                 Intent i = new Intent(getApplicationContext(), ReadActivity.class);
-                i.putExtra("message", item.getString(item.getColumnIndex("body")));
-                i.putExtra("sender", item.getString(item.getColumnIndex("address")));
+                i.putExtra("message", item.getMessage());
+                i.putExtra("sender", item.getSender());
                 startActivity(i);
             }
         });

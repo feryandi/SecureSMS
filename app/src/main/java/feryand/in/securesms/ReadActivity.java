@@ -20,8 +20,10 @@ public class ReadActivity extends AppCompatActivity {
 
     TextView snd;
     TextView msg;
-    String message;
     String deckey;
+
+    SMS sms;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,64 +37,42 @@ public class ReadActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            message= extras.getString("message");
-            snd.setText(extras.getString("sender"));
-            msg.setText(message);
+            sms = new SMS(extras.getString("message"), extras.getString("sender"));
 
-            if(isModifiedMessage(message)){
-                AlertDialog.Builder builder = new AlertDialog.Builder(ReadActivity.this);
-                builder.setTitle("Input Decryption Key");
+            snd.setText(sms.getSender());
 
-                final EditText input = new EditText(ReadActivity.this);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                builder.setView(input);
+            if(sms.isModifiedMessage()) {
+                if (sms.isEncrypted()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ReadActivity.this);
+                    builder.setTitle("Input Decryption Key");
 
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deckey = input.getText().toString();
-                        String bodymessage= getMessage(message);
-                        byte[] bmessage = Bonek.hexa_to_byte(bodymessage);
-                        ArrayList<Byte> lmessage=Bonek.arrayToList(bmessage);
-                        Bonek bonek = new Bonek();
-                        ArrayList<Block> to = bonek.decrypt(Bonek.byte_to_block(lmessage),Bonek.hexa_to_key(deckey));
-                        ArrayList<Byte> listByte= Bonek.block_to_byte(to);
-                        byte[] arrbyte = Bonek.listToArray(listByte);
-                        msg.setText(arrbyte.toString());
-                    }
-                });
+                    final EditText input = new EditText(ReadActivity.this);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT);
+                    builder.setView(input);
 
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deckey = input.getText().toString();
+                            String bodymessage = sms.getPlainMessage();
+                            byte[] bmessage = Bonek.hexa_to_byte(bodymessage);
+                            ArrayList<Byte> lmessage = Bonek.arrayToList(bmessage);
+                            Bonek bonek = new Bonek();
+                            ArrayList<Block> to = bonek.decrypt(Bonek.byte_to_block(lmessage), Bonek.hexa_to_key(deckey));
+                            ArrayList<Byte> listByte = Bonek.block_to_byte(to);
+                            byte[] arrbyte = Bonek.listToArray(listByte);
+                            msg.setText(arrbyte.toString());
+                        }
+                    });
+                } else {
+                    msg.setText(sms.getPlainMessage());
+                }
+
+            } else {
+                msg.setText(sms.getMessage());
             }
 
         }
     }
-
-    String getMessage(String str){
-        int startpos=str.indexOf("</ss>")+5;
-        int endpos= str.indexOf("<ds>");
-        return str.substring(startpos,endpos);
-
-        //return str.substring(11,str.length()-<panjang digital signaturenya>) atau pake panjang fixed
-    }
-
-    String getOption(String str){
-        return str.substring(4,6);
-    }
-
-    String getdigitalsignature(String str){
-        int startpos=str.indexOf("<ds>")+4;
-        int endpos= str.indexOf("</ds>");
-        return str.substring(startpos,endpos);
-    }
-
-    boolean isModifiedMessage(String str){
-        if(str.indexOf("<ss>")>=0){
-            return true;
-        }
-        else
-            return false;
-    }
-
-
 
 }
