@@ -31,12 +31,21 @@
 
     <ImageView
         android:layout_width="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1"
         android:layout_height="match_parent"
-        android:padding="15dp"
+        android:padding="5dp"
+        android:id="@+id/encImage"
+        android:layout_gravity="right"
+        android:src="@drawable/ic_encrypted"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:padding="5dp"
+        android:layout_marginRight="15dp"
         android:id="@+id/lockImage"
         android:layout_gravity="right"
-        android:contentDescription="@string/lock"
-        android:src="@drawable/ic_lock"/>
+        android:src="@drawable/ic_no_lock"/>
 
 </LinearLayout>

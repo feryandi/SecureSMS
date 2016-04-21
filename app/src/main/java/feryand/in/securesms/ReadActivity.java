@@ -1,18 +1,29 @@
 package feryand.in.securesms;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
+import feryand.in.securesms.API.HTTP;
 import feryand.in.securesms.ECDSA.ECDSA;
+import feryand.in.securesms.ECDSA.Point;
+import feryand.in.securesms.ECDSA.SHA1;
 import feryand.in.securesms.blockchipher.Block;
 import feryand.in.securesms.blockchipher.Bonek;
 
@@ -20,9 +31,56 @@ public class ReadActivity extends AppCompatActivity {
 
     TextView snd;
     TextView msg;
+    TextView cert;
     String deckey;
 
     SMS sms;
+
+    private class AsyncGetKey extends AsyncTask<String, String, String> {
+
+        String response;
+        private ProgressDialog dialog;
+
+        public AsyncGetKey(ReadActivity activity) {
+            dialog = new ProgressDialog(activity);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.setMessage("Verifying message signature. Please wait.");
+            dialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            response = HTTP.getInstance().getKey(params[0]);
+            return null;
+        }
+
+        protected void onPostExecute(String result){
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            try {
+                ECDSA ec = new ECDSA();
+                JSONObject json = new JSONObject(response);
+
+                Point pub = new Point(new BigInteger(json.getString("x"), 16), new BigInteger(json.getString("y"), 16), ec.prime);
+                SHA1 s = new SHA1(sms.getPlainMessage());
+
+                String ds = sms.getDigitalSignature();
+                Point rs = new Point(new BigInteger(ds.substring(0, 64), 16), new BigInteger(ds.substring(64, 128), 16), ec.prime);
+
+                if (ec.verifySignature(rs, s.getDigest(), pub)) {
+                    cert.setText("Verified");
+                } else {
+                    cert.setText("Verification Failed");
+                }
+            } catch (Exception e) {
+                Log.d("SSMS", "Exception: " + e);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +92,7 @@ public class ReadActivity extends AppCompatActivity {
 
         snd = (TextView) findViewById(R.id.sender);
         msg = (TextView) findViewById(R.id.message);
+        cert = (TextView) findViewById(R.id.cert);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -42,6 +101,8 @@ public class ReadActivity extends AppCompatActivity {
             snd.setText(sms.getSender());
 
             if(sms.isModifiedMessage()) {
+                msg.setText(sms.getPlainMessage());
+
                 if (sms.isEncrypted()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReadActivity.this);
                     builder.setTitle("Input Decryption Key");
@@ -64,8 +125,17 @@ public class ReadActivity extends AppCompatActivity {
                             msg.setText(arrbyte.toString());
                         }
                     });
-                } else {
-                    msg.setText(sms.getPlainMessage());
+                }
+
+                if (sms.isHaveSignature()) {
+
+                    try {
+
+                        new AsyncGetKey(this).execute(snd.getText().toString());
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
             } else {

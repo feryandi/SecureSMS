@@ -29,14 +29,14 @@ public class FirstActivity extends AppCompatActivity {
     private String OTP;
     DBHandler dbHandler = new DBHandler(this, null, null, 1);
 
-    private class AsyncSetKey extends AsyncTask<String, Integer, Double> {
+    private class AsyncSetKey extends AsyncTask<String, String, String> {
         @Override
-        protected Double doInBackground(String... params) {
+        protected String doInBackground(String... params) {
             HTTP.getInstance().setKey(params[0], params[1], params[2]);
             return null;
         }
 
-        protected void onPostExecute(Double result){
+        protected void onPostExecute(String result){
             Toast.makeText(getApplicationContext(), "Your ECDSA key is generated", Toast.LENGTH_LONG).show();
         }
     }

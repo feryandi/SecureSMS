@@ -12,7 +12,7 @@ public class ECDSA {
     /* y^2 = x^3 + ax^2 + b mod prime */  
     BigInteger a;
     BigInteger b;
-    BigInteger prime;     
+    public BigInteger prime;
     BigInteger n; /* order */
     Point G; /* base point */
     
@@ -78,7 +78,7 @@ public class ECDSA {
         return rs;
     }
     
-    public boolean verifySignature(Point rs, String hashed) {
+    public boolean verifySignature(Point rs, String hashed, Point pubk) {
         /* Masukan string hashed, harus sudah dihash dengan SHA-1 */
         
         boolean ret = false;
@@ -93,7 +93,7 @@ public class ECDSA {
             BigInteger u2 = ((rs.getX()).multiply(w)).mod(n);
             
             Point uP = G.multiply(u1, a);
-            Point uQ = pub.multiply(u2, a);
+            Point uQ = pubk.multiply(u2, a);
             
             Point xy = uP.add(uQ, a);
             

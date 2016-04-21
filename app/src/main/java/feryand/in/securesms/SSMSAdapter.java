@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -41,6 +42,9 @@ public class SSMSAdapter extends ArrayAdapter<SMS> {
             TextView sender = (TextView) v.findViewById(R.id.sender);
             TextView message = (TextView) v.findViewById(R.id.message);
 
+            ImageView lock = (ImageView) v.findViewById(R.id.lockImage);
+            ImageView encrypt = (ImageView) v.findViewById(R.id.encImage);
+
             if (sender != null) {
                 sender.setText(p.getSender());
             }
@@ -49,6 +53,20 @@ public class SSMSAdapter extends ArrayAdapter<SMS> {
                 message.setText(p.getPlainMessage());
             }
 
+            if (p.isModifiedMessage()) {
+                if (!p.isEncrypted()) {
+                    encrypt.setImageResource(0);
+                }
+
+                if (p.isHaveSignature()) {
+                    lock.setImageResource(R.drawable.ic_lock);
+                } else {
+                    lock.setImageResource(R.drawable.ic_no_lock);
+                }
+            } else {
+                encrypt.setImageResource(0);
+                lock.setImageResource(0);
+            }
         }
 
         return v;

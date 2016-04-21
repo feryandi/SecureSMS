@@ -53,7 +53,7 @@ public class SMS {
     }
 
     String getDigitalSignature(){
-        int startpos = message.indexOf("<ds>")+4;
+        int startpos = message.indexOf("<ds>")+4+2;
         int endpos = message.indexOf("</ds>");
         return message.substring(startpos,endpos);
     }

@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by Feryandi on 20 April 16.
@@ -34,24 +35,13 @@ public class HTTP {
     }
 
     public String getKey(String phone) {
-        String dataUrlParameters = "phone=" + phone;
         String responseStr = "";
         try {
-            url = new URL(dataUrl);
+            String dataUrlParameters = "phone=" + URLEncoder.encode(phone, "UTF-8");
+
+            url = new URL(dataUrl + "?" + dataUrlParameters);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
-            connection.setRequestProperty("Content-Length","" + Integer.toString(dataUrlParameters.getBytes().length));
-            connection.setRequestProperty("Content-Language", "en-US");
-            connection.setUseCaches(false);
-            connection.setDoInput(true);
-            connection.setDoOutput(true);
-
-            DataOutputStream wr = new DataOutputStream(
-                    connection.getOutputStream());
-            wr.writeBytes(dataUrlParameters);
-            wr.flush();
-            wr.close();
 
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
@@ -81,9 +71,12 @@ public class HTTP {
     }
 
     public String setKey(String phone, String x, String y) {
-        String dataUrlParameters = "phone=" + phone + "&x=" + x + "&y=" + y;
         String responseStr = "";
         try {
+            if ( phone.substring(0,1).equals("0") ) {
+                phone = "+62" + phone.substring(3, phone.length());
+            }
+            String dataUrlParameters = "phone=" + URLEncoder.encode(phone, "UTF-8") + "&x=" + x + "&y=" + y;
             url = new URL(dataUrl);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
