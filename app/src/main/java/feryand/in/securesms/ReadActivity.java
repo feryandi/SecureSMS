@@ -66,16 +66,25 @@ public class ReadActivity extends AppCompatActivity {
                 JSONObject json = new JSONObject(response);
 
                 Point pub = new Point(new BigInteger(json.getString("x"), 16), new BigInteger(json.getString("y"), 16), ec.prime);
+                Log.d("SSMS", "x: " + json.getString("x") + " | y: " + json.getString("y"));
                 SHA1 s = new SHA1(sms.getPlainMessage());
 
                 String ds = sms.getDigitalSignature();
-                Point rs = new Point(new BigInteger(ds.substring(0, 64), 16), new BigInteger(ds.substring(64, 128), 16), ec.prime);
+                Log.d("SSMS", "ds: " + ds);
+                String dsx = ds.substring(0, 64);
+                Log.d("SSMS", "dsX: " + dsx);
+                String dsy = ds.substring(64, 128);
+                Log.d("SSMS", "dsY: " + dsy);
+
+
+                Point rs = new Point(new BigInteger(dsx, 16), new BigInteger(dsy, 16), ec.prime);
 
                 if (ec.verifySignature(rs, s.getDigest(), pub)) {
                     cert.setText("Verified");
                 } else {
                     cert.setText("Verification Failed");
                 }
+
             } catch (Exception e) {
                 Log.d("SSMS", "Exception: " + e);
             }

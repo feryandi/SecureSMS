@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -58,6 +59,7 @@ public class WriteActivity extends AppCompatActivity {
     protected void sendSMSMessage(View v) {
         String r = receiver.getText().toString();
         String m = message.getText().toString();
+        String plainMsg = m;
         Bonek bonek= new Bonek();
 
         if ( E.isChecked()){
@@ -97,14 +99,15 @@ public class WriteActivity extends AppCompatActivity {
             ECDSA ec = new ECDSA();
             Data dataPri = dbHandler.findData("pri");
             ec.setPri(dataPri.getValue());
-            SHA1 s = new SHA1(m);
+
+            Log.d("SSMS", "Saved Private Key: " + dataPri.getValue());
+
+            SHA1 s = new SHA1(plainMsg);
             Point rs = ec.generateSignature(s.getDigest());
+            Log.d("SSMS", "Send rsX: " + (rs.getX()).toString(16));
+            Log.d("SSMS", "Send rsY: " + (rs.getY()).toString(16));
             m += "<ds>04" + (rs.getX()).toString(16) + "" + (rs.getY()).toString(16) + "</ds>";
         }
-
-
-
-
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
