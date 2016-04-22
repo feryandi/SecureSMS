@@ -75,6 +75,8 @@ public class HTTP {
         try {
             if ( phone.substring(0,1).equals("0") ) {
                 phone = "62" + phone.substring(1, phone.length());
+            } else {
+                phone = phone.substring(1, phone.length());
             }
             String dataUrlParameters = "phone=" + phone + "&x=" + x + "&y=" + y;
             url = new URL(dataUrl);
