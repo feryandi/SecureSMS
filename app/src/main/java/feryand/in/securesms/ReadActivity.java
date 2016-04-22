@@ -53,7 +53,7 @@ public class ReadActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            response = HTTP.getInstance().getKey(params[0]);
+            response = HTTP.getInstance().getKey(params[0].substring(1, params[0].length()));
             return null;
         }
 
