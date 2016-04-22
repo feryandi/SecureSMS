@@ -34,8 +34,9 @@ public class ECDSA {
     }
         
     public void generateKey() {
-        Random generator = new Random();
-        BigInteger iv = new BigInteger("" + (generator.nextInt()*5) + 1);
+        Random generator = new Random(System.nanoTime());
+        //BigInteger iv = new BigInteger("" + (generator.nextInt()*5) + 1); //Buggy as hell
+        BigInteger iv = BigInteger.probablePrime(64, generator);
         pri = iv.mod(n.subtract(BigInteger.valueOf(1)));    
         pub = G.multiply(pri, a);
         Point x = pub.multiply(n, a);

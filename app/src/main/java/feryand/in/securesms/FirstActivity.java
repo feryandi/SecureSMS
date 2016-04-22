@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,12 +53,14 @@ public class FirstActivity extends AppCompatActivity {
         repwd = (EditText) findViewById(R.id.repwd);
 
         Data data = dbHandler.findData("password");
+
         if (data != null) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }
+
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,8 +103,15 @@ public class FirstActivity extends AppCompatActivity {
                                         ((e.pub).getX()).toString(16),
                                         ((e.pub).getY()).toString(16));
 
+                                boolean a = dbHandler.deleteData("pri");
+                                Log.d("SSMS", "Delete entry: " + a);
                                 data = new Data("pri", (e.pri).toString(16));
                                 dbHandler.addData(data);
+
+                                Log.d("SSMS", "Private Key: " + (e.pri).toString(16));
+
+                                Data dataPri = dbHandler.findData("pri");
+                                Log.d("SSMS", "Saved Private Key: " + dataPri.getValue());
 
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
