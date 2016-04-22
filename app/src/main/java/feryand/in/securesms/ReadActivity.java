@@ -113,6 +113,7 @@ public class ReadActivity extends AppCompatActivity {
                 msg.setText(sms.getPlainMessage());
 
                 if (sms.isEncrypted()) {
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReadActivity.this);
                     builder.setTitle("Input Decryption Key");
 
@@ -131,9 +132,11 @@ public class ReadActivity extends AppCompatActivity {
                             ArrayList<Block> to = bonek.decrypt(Bonek.byte_to_block(lmessage), Bonek.hexa_to_key(deckey));
                             ArrayList<Byte> listByte = Bonek.block_to_byte(to);
                             byte[] arrbyte = Bonek.listToArray(listByte);
-                            msg.setText(arrbyte.toString());
+                            Log.d("masuk", arrbyte.toString());
+                            msg.setText(new String(arrbyte));
                         }
                     });
+                    builder.show();
                 }
 
                 if (sms.isHaveSignature()) {

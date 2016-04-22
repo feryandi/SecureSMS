@@ -104,15 +104,18 @@ public class Bonek {
         int n = strkey.length();
         int[] ret = new int[n / 2];
         for (int i = 0; i < n; i += 2) {
-            int a = ('0' <= strkey.charAt(i) && strkey.charAt(i) <= '9' ? strkey.charAt(i) - '0' : strkey.charAt(i) - 'a' + 10);
-            int b = ('0' <= strkey.charAt(i+1) && strkey.charAt(i+1) <= '9' ? strkey.charAt(i+1) - '0' : strkey.charAt(i+1) - 'a' + 10);
-            ret[i / 2] = (b << 4) | a;
+            int a = ('0' <= strkey.charAt(i) && strkey.charAt(i) <= '9' ? strkey.charAt(i) - '0' : strkey.charAt(i) - 'A' + 10);
+            int b = ('0' <= strkey.charAt(i+1) && strkey.charAt(i+1) <= '9' ? strkey.charAt(i+1) - '0' : strkey.charAt(i+1) - 'A' + 10);
+            ret[i / 2] = (a << 4) | b;
         }
         return ret;
     }
 
     public static ArrayList<Block> byte_to_block(ArrayList<Byte> b) {
-        assert (b.size() % Global.BLOCK_SIZE == 0);
+        if(b.size() % Global.BLOCK_SIZE !=0) {
+            int add = Global.BLOCK_SIZE - b.size() % Global.BLOCK_SIZE;
+            while(add-- !=0) b.add((byte) 0);
+        }
         ArrayList<Block> ret = new ArrayList();
         for (int i = 0; i * Global.BLOCK_SIZE < b.size(); i++) {
             ret.add(new Block(8));

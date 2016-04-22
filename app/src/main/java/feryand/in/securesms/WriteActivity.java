@@ -64,10 +64,8 @@ public class WriteActivity extends AppCompatActivity {
 
         if ( E.isChecked()){
             byte[] b= m.getBytes();
-            ArrayList<Byte> arrb= new ArrayList<>();
-            for(int i=0; i< b.length ;i++){
-                arrb.set(i,b[i]);
-            }
+            Log.d(m,String.valueOf(b.length));
+            ArrayList<Byte> arrb= Bonek.arrayToList(b);
             String strkey=EK.getText().toString();
 
 
