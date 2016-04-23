@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
@@ -76,9 +77,8 @@ public class FirstActivity extends AppCompatActivity {
 
                     OTP = sb.toString();
 
-                    /* TO-DO: Activate this in production
                     SmsManager smsManager = SmsManager.getDefault();
-                    smsManager.sendTextMessage(phone.getText().toString(), null, "Your SecureSMS code is " + OTP, null, null);*/
+                    smsManager.sendTextMessage(phone.getText().toString(), null, "Your SecureSMS code is " + OTP, null, null);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(FirstActivity.this);
                     builder.setTitle("Input Verification Code");

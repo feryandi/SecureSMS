@@ -139,7 +139,9 @@ public class ReadActivity extends AppCompatActivity {
                             ArrayList<Byte> listByte = Bonek.block_to_byte(to);
                             byte[] arrbyte = Bonek.listToArray(listByte);
 
-                            msg.setText(new String(arrbyte));
+                            String decMsg = new String(arrbyte);
+                            decMsg = decMsg.replaceAll("[^\\p{L}\\p{Nd}]+", "");
+                            msg.setText(decMsg);
                             decrypted = true;
 
                             if (decrypted) {
