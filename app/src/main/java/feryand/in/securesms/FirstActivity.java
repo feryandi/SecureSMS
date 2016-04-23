@@ -1,11 +1,14 @@
 package feryand.in.securesms;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsManager;
 import android.text.InputType;
@@ -26,6 +29,9 @@ public class FirstActivity extends AppCompatActivity {
     EditText phone;
     EditText pwd;
     EditText repwd;
+    String[] readSmsPerms = {Manifest.permission.READ_SMS};
+    String[] writeSmsPerms = {Manifest.permission.SEND_SMS};
+    String[] internetPerms = {Manifest.permission.INTERNET};
 
     private String OTPcode;
     private String OTP;
@@ -54,6 +60,19 @@ public class FirstActivity extends AppCompatActivity {
         repwd = (EditText) findViewById(R.id.repwd);
 
         Data data = dbHandler.findData("password");
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, readSmsPerms, 1);
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, writeSmsPerms, 2);
+            return;
+        }
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ) {
+            ActivityCompat.requestPermissions(this, internetPerms, 3);
+            return;
+        }
 
         if (data != null) {
             Intent intent = new Intent(this, MainActivity.class);
@@ -135,6 +154,36 @@ public class FirstActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    //fungsi request permision
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch (requestCode) {
+
+            case 1:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+
+                    return;
+                }
+
+            case 2:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+
+                    return;
+                }
+            case 3:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+
+                    return;
+                }
+        }
     }
 
 }

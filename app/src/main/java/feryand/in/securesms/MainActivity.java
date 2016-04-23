@@ -26,9 +26,7 @@ public class MainActivity extends AppCompatActivity {
     /* Variables */
     ListView inbox;
     SSMSAdapter adapter;
-    String[] readSmsPerms = {Manifest.permission.READ_SMS};
-    String[] writeSmsPerms = {Manifest.permission.SEND_SMS};
-    String[] internetPerms = {Manifest.permission.INTERNET};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,18 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         inbox = (ListView) findViewById(R.id.inbox);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this, readSmsPerms, 1);
-            return;
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this, writeSmsPerms, 2);
-            return;
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED ) {
-            ActivityCompat.requestPermissions(this, internetPerms, 3);
-            return;
-        }
+
 
         Uri inboxURI = Uri.parse("content://sms/inbox");
         String[] reqCols = new String[] { "_id", "address", "body" };
@@ -90,36 +77,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //fungsi request permision
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-        switch (requestCode) {
-
-            case 1:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-
-                    return;
-                }
-
-            case 2:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-
-                    return;
-                }
-            case 3:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-
-                    return;
-                }
-        }
-    }
 
 
     @Override
