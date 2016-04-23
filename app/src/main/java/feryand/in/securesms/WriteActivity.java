@@ -64,12 +64,13 @@ public class WriteActivity extends AppCompatActivity {
 
         if ( E.isChecked()){
             byte[] b= m.getBytes();
-            Log.d(m,String.valueOf(b.length));
+
             ArrayList<Byte> arrb= Bonek.arrayToList(b);
-            String strkey=EK.getText().toString();
 
+            SHA1 sha = new SHA1(EK.getText().toString());
+            String strkey = sha.getDigest();
 
-            int[] key= Bonek.hexa_to_key(strkey);
+            int[] key= Bonek.hexa_to_key(strkey.toUpperCase());
             ArrayList<Block> to=bonek.encrypt(Bonek.byte_to_block(arrb), key);
             ArrayList<Byte> ret = Bonek.block_to_byte(to);
 
@@ -98,12 +99,8 @@ public class WriteActivity extends AppCompatActivity {
             Data dataPri = dbHandler.findData("pri");
             ec.setPri(dataPri.getValue());
 
-            Log.d("SSMS", "Saved Private Key: " + dataPri.getValue());
-
             SHA1 s = new SHA1(plainMsg);
             Point rs = ec.generateSignature(s.getDigest());
-            Log.d("SSMS", "Send rsX: " + (rs.getX()).toString(16));
-            Log.d("SSMS", "Send rsY: " + (rs.getY()).toString(16));
             m += "<ds>04" + (rs.getX()).toString(16) + "" + (rs.getY()).toString(16) + "</ds>";
         }
 

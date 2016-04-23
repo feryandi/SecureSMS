@@ -36,6 +36,8 @@ public class ReadActivity extends AppCompatActivity {
 
     SMS sms;
 
+    boolean decrypted = false;
+
     private class AsyncGetKey extends AsyncTask<String, String, String> {
 
         String response;
@@ -67,7 +69,8 @@ public class ReadActivity extends AppCompatActivity {
 
                 Point pub = new Point(new BigInteger(json.getString("x"), 16), new BigInteger(json.getString("y"), 16), ec.prime);
                 Log.d("SSMS", "x: " + json.getString("x") + " | y: " + json.getString("y"));
-                SHA1 s = new SHA1(sms.getPlainMessage());
+                Log.d("SSMS", "msg: " + msg.getText().toString());
+                SHA1 s = new SHA1(msg.getText().toString());
 
                 String ds = sms.getDigitalSignature();
                 Log.d("SSMS", "ds: " + ds);
@@ -124,30 +127,48 @@ public class ReadActivity extends AppCompatActivity {
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            deckey = input.getText().toString();
+                            SHA1 sha = new SHA1(input.getText().toString());
+                            deckey = sha.getDigest();
+
                             String bodymessage = sms.getPlainMessage();
                             byte[] bmessage = Bonek.hexa_to_byte(bodymessage);
                             ArrayList<Byte> lmessage = Bonek.arrayToList(bmessage);
+
                             Bonek bonek = new Bonek();
-                            ArrayList<Block> to = bonek.decrypt(Bonek.byte_to_block(lmessage), Bonek.hexa_to_key(deckey));
+                            ArrayList<Block> to = bonek.decrypt(Bonek.byte_to_block(lmessage), Bonek.hexa_to_key(deckey.toUpperCase()));
                             ArrayList<Byte> listByte = Bonek.block_to_byte(to);
                             byte[] arrbyte = Bonek.listToArray(listByte);
-                            Log.d("masuk", arrbyte.toString());
+
                             msg.setText(new String(arrbyte));
+                            decrypted = true;
+
+                            if (decrypted) {
+
+                                try {
+
+                                    new AsyncGetKey(ReadActivity.this).execute(snd.getText().toString());
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     });
                     builder.show();
-                }
 
-                if (sms.isHaveSignature()) {
+                } else {
 
-                    try {
+                    if (sms.isHaveSignature()) {
 
-                        new AsyncGetKey(this).execute(snd.getText().toString());
+                        try {
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                            new AsyncGetKey(this).execute(snd.getText().toString());
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
+
                 }
 
             } else {
